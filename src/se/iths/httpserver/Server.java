@@ -63,4 +63,8 @@ public class Server implements Runnable {
         }
         return fileData;
     }
+
+    private String getContentType(String fileRequested) {
+        return null;
+    }
 }
