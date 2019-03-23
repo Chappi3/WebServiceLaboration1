@@ -65,6 +65,22 @@ public class Server implements Runnable {
     }
 
     private String getContentType(String fileRequested) {
-        return null;
+        fileRequested = fileRequested.toLowerCase();
+        if (fileRequested.endsWith(".htm")  ||  fileRequested.endsWith(".html"))
+            return "text/html";
+        else if (fileRequested.endsWith(".jpg") || fileRequested.endsWith(".jpeg"))
+            return "image/jpeg";
+        else if (fileRequested.endsWith(".png"))
+            return "image/png";
+        else if (fileRequested.endsWith(".js"))
+            return "text/javascript";
+        else if (fileRequested.endsWith(".css"))
+            return "text/css";
+        else if (fileRequested.endsWith(".pdf"))
+            return "application/pdf";
+        else if (fileRequested.endsWith(".json"))
+            return "application/json";
+        else
+            return "text/plain";
     }
 }
