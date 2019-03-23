@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Server implements Runnable {
 
-    private static final File WEB_ROOT = new File(".");
+    private static final File WEB_ROOT = new File("./Resources/Static");
     private static final String DEFAULT_FILE = "index.html";
     private static final String FILE_NOT_FOUND = "404.html";
     private static final String METHOD_NOT_SUPPORTED = "not_supported.html";
