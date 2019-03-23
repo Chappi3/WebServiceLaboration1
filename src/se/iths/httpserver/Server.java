@@ -8,16 +8,16 @@ import java.util.*;
 
 public class Server implements Runnable {
 
-    static final File WEB_ROOT = new File(".");
-    static final String DEFAULT_FILE = "index.html";
-    static final String FILE_NOT_FOUND = "404.html";
-    static final String METHOD_NOT_SUPPORTED = "not_supported.html";
-    static final String HELLO = "/hello";
-    static final int PORT = 9000;
-    static final boolean verbose = true;
+    private static final File WEB_ROOT = new File(".");
+    private static final String DEFAULT_FILE = "index.html";
+    private static final String FILE_NOT_FOUND = "404.html";
+    private static final String METHOD_NOT_SUPPORTED = "not_supported.html";
+    private static final String HELLO = "/hello";
+    private static final int PORT = 9000;
+    private static final boolean verbose = true;
     private Socket socket;
 
-    public Server(Socket socket) {
+    private Server(Socket socket) {
         this.socket = socket;
     }
 
