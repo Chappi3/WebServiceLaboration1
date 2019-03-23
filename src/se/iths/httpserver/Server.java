@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
+import java.util.Map;
 
 public class Server implements Runnable {
 
@@ -101,5 +102,10 @@ public class Server implements Runnable {
         if (verbose) {
             System.out.println("File " + fileRequested + " not found");
         }
+    }
+
+    public static void parseQuery(String query, Map<String,
+            Object> parameters) throws UnsupportedEncodingException {
+
     }
 }
