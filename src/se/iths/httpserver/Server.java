@@ -81,7 +81,7 @@ public class Server implements Runnable {
                     fileRequested += DEFAULT_FILE;
                 }
                 else if (fileRequested.toLowerCase().contains(HELLO)) {
-                    new HelloHandler().handle(socket,fileRequested,out,dataOut);
+                    new HelloHandler().handle(fileRequested,out,dataOut);
                 }
 
                 if (fileRequested.contains(".")) {
