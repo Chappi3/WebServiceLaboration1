@@ -1,6 +1,7 @@
 package se.iths.httpserver;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -49,6 +50,17 @@ public class Server implements Runnable {
     }
 
     private byte[] readFileData(File file, int fileLength) throws IOException {
-        return null;
+
+        FileInputStream fileIn = null;
+        byte[] fileData = new byte[fileLength];
+
+        try {
+            fileIn = new FileInputStream(file);
+            fileIn.read(fileData);
+        } finally {
+            if (fileIn != null)
+                fileIn.close();
+        }
+        return fileData;
     }
 }
