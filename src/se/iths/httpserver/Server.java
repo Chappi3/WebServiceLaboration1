@@ -4,10 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Server implements Runnable {
 
@@ -48,7 +45,92 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
+        BufferedReader in = null; PrintWriter out = null; BufferedOutputStream dataOut = null;
+        String fileRequested = null;
 
+        try {
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream());
+            dataOut = new BufferedOutputStream(socket.getOutputStream());
+            String input = in.readLine();
+            StringTokenizer parse = new StringTokenizer(input);
+            String method = parse.nextToken().toUpperCase();
+            fileRequested = parse.nextToken();
+
+            if (!method.equals("GET")  &&  !method.equals("HEAD") && !method.equals("POST")) {
+                if (verbose) {
+                    System.out.println("501 Not Implemented : " + method + " method.");
+                }
+
+                File file = new File(WEB_ROOT, METHOD_NOT_SUPPORTED);
+                int fileLength = (int) file.length();
+                String contentMimeType = "text/html";
+                byte[] fileData = readFileData(file, fileLength);
+
+                out.println("HTTP/1.1 501 Not Implemented");
+                out.println("Date: " + new Date());
+                out.println("Content-type: " + contentMimeType);
+                out.println("Content-length: " + fileLength);
+                out.println();
+                out.flush();
+                dataOut.write(fileData, 0, fileLength);
+                dataOut.flush();
+
+            } else {
+                if (fileRequested.endsWith("/")) {
+                    fileRequested += DEFAULT_FILE;
+                }
+                else if (fileRequested.toLowerCase().contains(HELLO)) {
+                    new HelloHandler().handle(socket,fileRequested,out,dataOut);
+                }
+
+                if (fileRequested.contains(".")) {
+                    File file = new File(WEB_ROOT, fileRequested);
+                    int fileLength = (int) file.length();
+                    String content = getContentType(fileRequested);
+
+                    if (method.equals("GET")) {
+                        byte[] fileData = readFileData(file, fileLength);
+
+                        out.println("HTTP/1.1 200 OK");
+                        out.println("Date: " + new Date());
+                        out.println("Content-type: " + content);
+                        out.println("Content-length: " + fileLength);
+                        out.println();
+                        out.flush();
+
+                        dataOut.write(fileData, 0, fileLength);
+                        dataOut.flush();
+
+                        if (verbose) {
+                            System.out.println("File " + fileRequested + " of type " + content + " returned");
+                        }
+                    }
+                }
+            }
+
+        } catch (FileNotFoundException fnfe) {
+            try {
+                fileNotFound(out, dataOut, fileRequested);
+            } catch (IOException ioe) {
+                System.err.println("Error with file not found exception : " + ioe.getMessage());
+            }
+
+        } catch (IOException ioe) {
+            System.err.println("Server error : " + ioe);
+        } finally {
+            try {
+                in.close();
+                out.close();
+                dataOut.close();
+            } catch (Exception e) {
+                System.err.println("Error closing stream : " + e.getMessage());
+            }
+
+            if (verbose) {
+                System.out.println("Connection closed.\n");
+            }
+        }
     }
 
     private byte[] readFileData(File file, int fileLength) throws IOException {
