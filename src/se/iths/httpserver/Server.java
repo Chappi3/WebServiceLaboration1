@@ -47,4 +47,8 @@ public class Server implements Runnable {
     public void run() {
 
     }
+
+    private byte[] readFileData(File file, int fileLength) throws IOException {
+        return null;
+    }
 }
