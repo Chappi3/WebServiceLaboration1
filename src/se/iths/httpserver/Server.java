@@ -14,8 +14,8 @@ public class Server implements Runnable {
     static final boolean verbose = true;
     private Socket socket;
 
-    public Server() {
-
+    public Server(Socket socket) {
+        this.socket = socket;
     }
 
     public static void main(String[] args) {
