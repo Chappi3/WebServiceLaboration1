@@ -57,6 +57,20 @@ public class Server implements Runnable {
             String method = parse.nextToken().toUpperCase();
             fileRequested = parse.nextToken();
 
+            int contentLength = 0;
+            boolean loop = true;
+            String containsContentLength;
+            if (method.equals("POST")) {
+                while (loop) {
+                    containsContentLength = in.readLine();
+                    if (containsContentLength.contains("Content-Length")) {
+                        String getContentLength = containsContentLength.substring(16);
+                        contentLength = Integer.parseInt(getContentLength);
+                        loop = false;
+                    }
+                }
+            }
+
             if (!method.equals("GET")  &&  !method.equals("HEAD") && !method.equals("POST")) {
                 if (verbose) {
                     System.out.println("501 Not Implemented : " + method + " method.");
@@ -81,7 +95,7 @@ public class Server implements Runnable {
                     fileRequested += DEFAULT_FILE;
                 }
                 else if (fileRequested.toLowerCase().contains(HELLO)) {
-                    new HelloHandler().handle(fileRequested,out,dataOut);
+                    new HelloHandler().handle(method,fileRequested,in,out,dataOut,contentLength);
                 }
 
                 if (fileRequested.contains(".")) {

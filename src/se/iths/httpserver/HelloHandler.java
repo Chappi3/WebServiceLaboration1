@@ -9,19 +9,36 @@ import static se.iths.httpserver.Server.parseQuery;
 
 public class HelloHandler {
 
-    public void handle(String request, PrintWriter out, BufferedOutputStream dataOut) throws IOException {
+    public void handle(String method,String request,BufferedReader in, PrintWriter out, BufferedOutputStream dataOut,int contentLength) throws IOException {
 
         Map<String, Object> parameters = new HashMap<>();
-        parseQuery(request, parameters);
-
         String response = "";
-        String name = null;
-        for (String key : parameters.keySet()) {
-            response += key;
-            if (response.contains("name")) {
-                name = (String)parameters.get(key);
+        String name = "";
+
+        if (method.equals("GET") && request.contains("?")) {
+            parseQuery(request, parameters);
+            for (String key : parameters.keySet()) {
+                response += key;
+                if (response.contains("name")) {
+                    name = (String)parameters.get(key);
+                }
             }
         }
+
+        if (method.equals("POST")) {
+            while (true) {
+                String nextHeader = in.readLine();
+                if (nextHeader.equals(""))
+                    break;
+            }
+            char[] chars = new char[contentLength];
+            contentLength= in.read(chars);
+            for (int i = 0; i < contentLength;i++) {
+                name = name + chars[i];
+            }
+            name = name.replaceAll("name=", "");
+        }
+
         if (name == null) {
             response = "Hello, World!";
         }
